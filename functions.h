@@ -22,5 +22,6 @@ void makeEmpty(BigInt* bigInt);
 BigInt* add(BigInt* bigInt1, BigInt* bigInt2);
 BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2);
 void removeLeadingZeros(BigInt* bigInt);
+int compare(BigInt *num1, BigInt *num2);
 
 #endif

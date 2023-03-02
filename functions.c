@@ -196,6 +196,12 @@ BigInt* add(BigInt* bigInt1, BigInt* bigInt2) {
             curr2 = curr2->next;
         }
     }
+
+    // If the result is zero, set the sign to positive
+    if (isEmpty(result)) {
+        result->sign = 1;
+    }
+
     return result;
 }
 
@@ -234,20 +240,31 @@ BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2) {
     BigInt* abs2 = clone(bigInt2);
     abs1->sign = 1;
     abs2->sign = 1;
+
     BigInt* result = (BigInt*) malloc(sizeof(BigInt));
     result->head = NULL;
     result->sign = bigInt1->sign;
-    Node* curr1 = abs1->head;
-    Node* curr2 = abs2->head;
+
+    Node* curr1;
+    Node* curr2;
+    if(compare(abs1, abs2) == -1){
+        curr1 = abs2->head;
+        curr2 = abs1->head;
+        result->sign = -result->sign;
+    }else{
+        curr1 = abs1->head;
+        curr2 = abs2->head;
+    }
     Node* prev = NULL;
     int borrow = 0;
+
     while (curr1 || curr2) {
         int digit1 = curr1 ? curr1->data : 0;
         int digit2 = curr2 ? curr2->data : 0;
-        printf("digit1 = %d, digit2 = %d\n", digit1, digit2);
         int diff = digit1 - digit2 - borrow;
+
         borrow = 0;
-        if (diff < 0 && curr1) {
+        if (diff < 0) {
             diff += 10;
             borrow = 1;
         }
@@ -267,7 +284,7 @@ BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2) {
     }
 
     // Remove leading zeros
-    removeLeadingZeros(result);
+    //removeLeadingZeros(result);
 
     // If the result is zero, set the sign to positive
     if (isEmpty(result)) {
@@ -281,19 +298,66 @@ BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2) {
     return result;
 }
 
+int compare(BigInt *num1, BigInt *num2) {
+    if (count(num1) > count(num2))
+        return 1;
+    if (count(num1) < count(num2))
+        return -1;
+
+    Node *curr1 = num1->head;
+    Node *curr2 = num2->head;
+    int ret = 0;
+    while (curr1 != NULL && curr2 != NULL) {
+        if (curr1->data > curr2->data) {
+            ret = 1;
+        }
+        if (curr1->data < curr2->data) {
+            ret = -1;
+        }
+
+        curr1 = curr1->next;
+        curr2 = curr2->next;
+    }
+
+    return ret;
+}
+
 // Remove leading zeros from a BigInt
 void removeLeadingZeros(BigInt* bigInt) {
     if (bigInt->head == NULL)
         return;
 
+    int indexOfZeros = 0;
+    int indexOfNumber = 0;
+    int isLeadingZero = 0;
     Node* curr = bigInt->head;
-    Node* prev = NULL;
-    while (curr && curr->data == 0) {
-        prev = curr;
+    while (curr) {
+        ++indexOfNumber;
+        if (curr->data == 0 && isLeadingZero == 0){
+            isLeadingZero = 1;
+            indexOfZeros = indexOfNumber;
+        }
+        if(curr->data != 0){
+            isLeadingZero = 0;
+            indexOfZeros = 0;
+        }
         curr = curr->next;
-        free(prev);
     }
-    bigInt->head = curr;
+
+    curr = bigInt->head;
+    if(isLeadingZero == 1){
+        Node* prev = NULL;
+        for (int i = 0; i < indexOfZeros - 1; ++i) {
+            curr = curr->next;
+        }
+
+        while (curr){
+            prev = curr;
+            curr = curr->next;
+            free(prev);
+        }
+    }
+
     if (!bigInt->head) {
         bigInt->head = createNode(0);
     }
@@ -301,8 +365,8 @@ void removeLeadingZeros(BigInt* bigInt) {
 
 // Example usage
 int main() {
-    BigInt *num1 = create("7");
-    BigInt *num2 = create("9");
+    BigInt *num1 = create("1000");
+    BigInt *num2 = create("-1000");
 
     if(!isEmpty(num1) && !isEmpty(num2)){
         printf("Both are not empty!\n");
