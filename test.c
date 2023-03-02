@@ -114,14 +114,54 @@ int TestingSub(char* var1, char* var2, char* answ)
     return TRUE;
 }
 
-int TestingCompare(){
+int TestingCompareAbs(char* var1, char* var2){
+    BigInt* num1 = create(var1);
+    BigInt* num2 = create(var2);
+    int res = compareAbsolute(num1, num2);
 
+    freeBigInt(num1);
+    freeBigInt(num2);
+
+    return res;
 }
 
-int TestingRemoveLeadingZeros(){
+int TestingRemoveLeadingZeros(char* var1, char* var2){
+    BigInt* num = create(var1);
+    removeLeadingZeros(num);
+    char* numText = toString(num);
 
+    if(strlen(var2) != strlen(numText)) return FALSE;
 
+    for(int i = 0; i < strlen(var2); ++i){
+        if(var2[i] != numText[i]){
+            return FALSE;
+        }
+    }
+
+    freeBigInt(num);
+    free(numText);
+    return TRUE;
 }
+
+int TestingClone(char* var){
+    BigInt* num = create(var);
+    BigInt* newNum = clone(num);
+    char* newNumText = toString(num);
+    if(strlen(var) != strlen(newNumText)) return FALSE;
+
+    for(int i = 0; i < strlen(var); ++i){
+        if(var[i] != newNumText[i]){
+            return FALSE;
+        }
+    }
+
+    freeBigInt(num);
+    freeBigInt(newNum);
+    free(newNumText);
+
+    return TRUE;
+}
+
 int main()
 {
 
@@ -133,6 +173,7 @@ int main()
     assert(TestingCount("444555") == 6);
     assert(TestingCount("-2244") == 4);
     assert(TestingCount("0") == 1);
+    assert(TestingCount(NULL) == 0);
 
     assert(TestingToString("41234") == TRUE);
     assert(TestingToString("-2333") == TRUE);
@@ -142,14 +183,32 @@ int main()
     assert(TestingAdd("-23", "10", "-13") == TRUE);
     assert(TestingAdd("-10", "-15", "-25") == TRUE);
     assert(TestingAdd("150", "200", "350") == TRUE);
+    assert(TestingAdd("70", "120", "-50") == FALSE);
 
     assert(TestingSub("-23", "10", "-33") == TRUE);
     assert(TestingSub("-30", "-15", "-15") == TRUE);
     assert(TestingSub("150", "200", "-50") == TRUE);
     assert(TestingSub("1500", "200", "1300") == TRUE);
+    assert(TestingSub("340", "100", "440") == FALSE);
 
 
+    assert(TestingCompareAbs("1333", "1200") == 1);
+    assert(TestingCompareAbs("14", "14") == 0);
+    assert(TestingCompareAbs("0","100") == -1);
 
+    assert(TestingClone("1111") == TRUE);
 
-    
+    assert(TestingRemoveLeadingZeros("000100234","100234") == TRUE);
+    assert(TestingRemoveLeadingZeros("000234","0234") == FALSE);
+
+    FILE *file_ptr = fopen("test.txt", "w"); // open file for writing
+    if (file_ptr == NULL) {
+        printf("Error opening file.\n");
+        return 1;
+    }
+
+    fprintf(file_ptr, "All tests passed!\n"); // print message to file
+
+    fclose(file_ptr); // close file
+    return 0;
 }
