@@ -363,37 +363,3 @@ void removeLeadingZeros(BigInt* bigInt) {
         bigInt->head = createNode(0);
     }
 }
-
-// Example usage
-int main() {
-    BigInt *num1 = create("1000678678");
-    BigInt *num2 = create("-999678678");
-
-    if(!isEmpty(num1) && !isEmpty(num2)){
-        printf("Both are not empty!\n");
-
-        printf("num1 sign: %d, num2 sign: %d\n",num1->sign, num2->sign);
-        printf("num1: %s\n", toString(num1));
-        printf("num2: %s\n", toString(num2));
-
-        BigInt *sum = add(num1, num2);
-        BigInt *diff = subtract(num1, num2);
-        printf("sun sign: %d, diff sign: %d\n",sum->sign, diff->sign);
-        printf("sum : %s\n", toString(sum));
-        printf("diff: %s\n", toString(diff));
-
-
-        makeEmpty(num1);
-        if(isEmpty(num1))
-            printf("Empty num1: %s\n", toString(num1));
-
-
-        freeBigInt(num1);
-        freeBigInt(num2);
-        freeBigInt(sum);
-        freeBigInt(diff);
-    }else
-        printf("Both are empty.");
-
-    return 0;
-}
