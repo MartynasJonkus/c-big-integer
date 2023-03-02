@@ -284,7 +284,7 @@ BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2) {
     }
 
     // Remove leading zeros
-    //removeLeadingZeros(result);
+    removeLeadingZeros(result);
 
     // If the result is zero, set the sign to positive
     if (isEmpty(result)) {
@@ -347,13 +347,14 @@ void removeLeadingZeros(BigInt* bigInt) {
     curr = bigInt->head;
     if(isLeadingZero == 1){
         Node* prev = NULL;
-        for (int i = 0; i < indexOfZeros - 1; ++i) {
+        for (int i = 0; i < indexOfZeros - 2; ++i) {
             curr = curr->next;
         }
 
         while (curr){
             prev = curr;
             curr = curr->next;
+            prev->next = NULL;
             free(prev);
         }
     }
@@ -365,8 +366,8 @@ void removeLeadingZeros(BigInt* bigInt) {
 
 // Example usage
 int main() {
-    BigInt *num1 = create("1000");
-    BigInt *num2 = create("-1000");
+    BigInt *num1 = create("1000678678");
+    BigInt *num2 = create("-999678678");
 
     if(!isEmpty(num1) && !isEmpty(num2)){
         printf("Both are not empty!\n");
