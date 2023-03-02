@@ -247,7 +247,7 @@ BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2) {
 
     Node* curr1;
     Node* curr2;
-    if(compare(abs1, abs2) == -1){
+    if(compareAbsolute(abs1, abs2) == -1){
         curr1 = abs2->head;
         curr2 = abs1->head;
         result->sign = -result->sign;
@@ -298,7 +298,7 @@ BigInt* subtract(BigInt* bigInt1, BigInt* bigInt2) {
     return result;
 }
 
-int compare(BigInt *num1, BigInt *num2) {
+int compareAbsolute(BigInt *num1, BigInt *num2) {
     if (count(num1) > count(num2))
         return 1;
     if (count(num1) < count(num2))
